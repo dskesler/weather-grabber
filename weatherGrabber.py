@@ -1,8 +1,9 @@
+#!/usr/local/bin/python3
+
 import requests
 from bs4 import BeautifulSoup
 import re
 from os import listdir
-
 
 class WeatherGrabber:
     urls = []
@@ -42,8 +43,8 @@ class WeatherGrabber:
             img = requests.get(result)
             file_name = result.rsplit('/', 1)[1]
             if file_name not in file_list:
-                (file_name, 'wb').write(img.content)
-
+                open(file_name, 'wb').write(img.content)
+                print('Found new image: ' + file_name, end=' ')
 
 def run():
     url = 'https://www.alabamawx.com'

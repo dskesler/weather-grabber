@@ -34,7 +34,7 @@ class WeatherGrabber:
 
                 # print(imgText)
                 if re.match(self.image_pattern, img_text):
-                    self.results.append(re.sub('-600x298', '', img_text))  # removing smaller resolution portion of url
+                    self.results.append(re.sub('-300x200', '', img_text))  # removing smaller resolution portion of url
 
     def write_images_to_files(self):
         path = "."
@@ -44,17 +44,21 @@ class WeatherGrabber:
             file_name = result.rsplit('/', 1)[1]
             if file_name not in file_list:
                 open(file_name, 'wb').write(img.content)
-                print('Found new image: ' + file_name, end=' ')
+                print('Found new image: ' + file_name + '\n', end=' ')
 
 def run():
-    url = 'https://www.alabamawx.com'
-    img_pattern = re.compile(r'.*gfs-KBHM-daily_tmin_tmax.*')
-    url_pattern = re.compile(r'https:\/\/www.alabamawx.com\/\?p=\d+')
-    wb = WeatherGrabber(url, img_pattern=img_pattern, url_pattern=url_pattern)
-    wb.set_urls()
-    print(*wb.urls, sep='\n')
-    wb.set_results()
-    wb.write_images_to_files()
+    baseUrl = 'https://www.alabamawx.com/category/allposts/page/'
+    first_day_search = 1
+    last_day_search = 8
+    for i in range(first_day_search, last_day_search + 1):
+        pagedUrl = baseUrl + str(i)
+        img_pattern = re.compile(r'.*nbm-conus-KBHM-daily_tmin_tmax.*')
+        url_pattern = re.compile(r'https:\/\/www.alabamawx.com\/')
+        wb = WeatherGrabber(pagedUrl, img_pattern=img_pattern, url_pattern=url_pattern)
+        wb.set_urls()
+        print(*wb.urls, sep='\n')
+        wb.set_results()
+        wb.write_images_to_files()
 
 
 if __name__ == "__main__":
